@@ -1,5 +1,8 @@
 #include "Game.h"
 
+SDL_Texture* playerTexture;
+SDL_Rect srcRect, dstRect;
+
 Game::Game()
 {
 }
@@ -38,6 +41,10 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
     {
         isRunning = false;
     }
+
+    SDL_Surface* tmpSurface = IMG_Load("assets/reimu.png");
+    playerTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface);
+    SDL_FreeSurface(tmpSurface);
 }
 
 void Game::handleEvents()
@@ -56,12 +63,14 @@ void Game::handleEvents()
 }
 
 void Game::update() {
-    cnt++;
-    std::cout << cnt << std::endl;
+    // TODO: Autosize based on res. Even 64x64 is small on a 4k screen
+    dstRect.h = 64;
+    dstRect.w = 64;
 }
 
 void Game::render() {
     SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, playerTexture, NULL, &dstRect);
     // TODO: Add stuff to render
     SDL_RenderPresent(renderer);
 }
