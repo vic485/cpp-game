@@ -1,7 +1,9 @@
 #include "Game.h"
+#include "TextureManager.h"
+#include "GameObject.h"
 
-SDL_Texture* playerTexture;
-SDL_Rect srcRect, dstRect;
+GameObject *player;
+GameObject *marisa;
 
 Game::Game()
 {
@@ -10,7 +12,7 @@ Game::~Game()
 {
 }
 
-void Game::init(const char *title, int xPos, int yPos, int width, int height, bool fullScreen)
+void Game::init(const char *title, int width, int height, bool fullScreen)
 {
     int flags = 0;
     if (fullScreen)
@@ -21,8 +23,7 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
     {
         std::cout << "Subsystems Initialized..." << std::endl;
-
-        window = SDL_CreateWindow(title, xPos, yPos, width, height, flags);
+        window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
         if (window)
         {
             std::cout << "Window Created!" << std::endl;
@@ -42,9 +43,8 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
         isRunning = false;
     }
 
-    SDL_Surface* tmpSurface = IMG_Load("assets/reimu.png");
-    playerTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface);
-    SDL_FreeSurface(tmpSurface);
+    player = new GameObject("assets/reimu.png", renderer, 0, 0);
+    marisa = new GameObject("assets/marisa.png", renderer, 500, 64);
 }
 
 void Game::handleEvents()
@@ -62,20 +62,23 @@ void Game::handleEvents()
     }
 }
 
-void Game::update() {
-    // TODO: Autosize based on res. Even 64x64 is small on a 4k screen
-    dstRect.h = 64;
-    dstRect.w = 64;
+void Game::update()
+{
+    player->Update();
+    marisa->Update();
 }
 
-void Game::render() {
+void Game::render()
+{
     SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, playerTexture, NULL, &dstRect);
+    player->Render();
+    marisa->Render();
     // TODO: Add stuff to render
     SDL_RenderPresent(renderer);
 }
 
-void Game::clean() {
+void Game::clean()
+{
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();

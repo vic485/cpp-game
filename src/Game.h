@@ -1,5 +1,4 @@
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 #include <iostream>
 
 class Game
@@ -8,7 +7,7 @@ public:
     Game();
     ~Game();
 
-    void init(const char *title, int xPos, int yPos, int width, int height, bool fullScreen);
+    void init(const char *title, int width, int height, bool fullScreen);
 
     void handleEvents();
     void update();
